@@ -1,0 +1,28 @@
+{
+  "name": "trello2planka",
+  "version": "0.0.1",
+  "description": "Import your Trello JSON Export to your self-hosted planka.",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/christophenne/trello2planka.git"
+  },
+  "keywords": [
+    "trello",
+    "planka",
+    "import"
+  ],
+  "author": "christophenne",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/christophenne/trello2planka/issues"
+  },
+  "homepage": "https://github.com/christophenne/trello2planka#readme",
+  "dependencies": {
+    "request": "^2.88.2"
+  }
+}
