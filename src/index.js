@@ -1,6 +1,6 @@
-const { login, createImportProject, createBoard, createList } = require('./planka/api');
+const { login, createImportProject, createBoard, createList, createCard } = require('./planka/api');
 const { readAndValidateConfig } = require('./utils/config');
-const { loadTrelloBoard, getLists } = require('./trello/export');
+const { loadTrelloBoard, getLists, getCardsOfList } = require('./trello/export');
 
 const main = async () => {
     try {
@@ -16,11 +16,21 @@ const main = async () => {
         });
         const lists = getLists();
         for(const [idx, list] of lists.entries()) {
-            await createList({
-                ...list,
+            const plankaList = await createList({
+                name: list.name,
                 boardId: plankaBoard.id,
-                position: idx
+                position: list.pos
             });
+            const cards = getCardsOfList(list.id);
+            for(const card of cards) {
+                await createCard({
+                    boardId: plankaBoard.id,
+                    listId: plankaList.id,
+                    position: card.pos,
+                    name: card.name,
+                    description: card.desc || null
+                });
+            }
         }
     } catch (err) {
         console.error(err);

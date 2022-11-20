@@ -14,12 +14,10 @@ const loadTrelloBoard = async (filename) => new Promise((resolve, reject) => {
     });
 });
 
-const getOrganization = (id) => trelloBoard.organizations.find(o => o.id === id);
+const getLists = () => trelloBoard.lists;
 
-const getLists = () => 
-    trelloBoard.lists.map((list) => ({
-        name: list.name
-    }));
+const getCardsOfList = (listId) => trelloBoard.cards.filter(l => l.idList === listId);
 
 exports.loadTrelloBoard = loadTrelloBoard;
 exports.getLists = getLists;
+exports.getCardsOfList = getCardsOfList;
