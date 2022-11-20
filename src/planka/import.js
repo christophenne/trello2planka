@@ -1,5 +1,6 @@
 const { setupPlankaClient, createImportProject, createBoard, createList, createCard, createTask } = require('./client');
 const { loadTrelloBoard, getBoardName, getTrelloLists, getTrelloCardsOfList, getChecklistOfCard } = require('../trello/export');
+const { getImportProjectName } = require('../utils/cmd');
 
 const importTrelloBoard = async (config, filename) => {
     await loadTrelloBoard(filename);
@@ -44,7 +45,7 @@ const importTrelloBoard = async (config, filename) => {
 }
 
 async function createProjectAndBoard(config) {
-    const project = await createImportProject(config.IMPORT_PROJECT_NAME || 'Trello Import');
+    const project = await createImportProject(getImportProjectName() || 'Trello Import');
     const plankaBoard = await createBoard({
         name: getBoardName(),
         projectId: project.id,

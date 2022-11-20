@@ -5,8 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "import-board": "node src/index.js",
-    "import-sample-board": "npm run import-board sample-board-export.json",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "import-sample-board": "npm run import-board -- --import-project-name=\"Trello Sample Import\" --file=sample-board-export.json"
   },
   "repository": {
     "type": "git",
