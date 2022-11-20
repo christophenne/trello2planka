@@ -1,7 +1,5 @@
 {
   "PLANKA_API_BASE": "http://localhost:3000/api/",
   "PLANKA_IMPORT_USER": "demo",
-  "PLANKA_IMPORT_PASSWORD": "demo",
-  "TRELLO_JSON_FILE": "sample-trello-export.json",
-  "IMPORT_PROJECT_NAME": "Trello Import"
+  "PLANKA_IMPORT_PASSWORD": "demo"
 }

@@ -1,5 +1,5 @@
 const request = require('request');
-const { plankaPath, API_ACCESS_TOKENS, API_PROJECTS, API_BOARDS } = require('./paths');
+const { plankaPath, API_ACCESS_TOKENS, API_PROJECTS, API_BOARDS, API_LISTS } = require('./paths');
 
 let apiBase;
 let token;
@@ -38,6 +38,18 @@ const createBoard = async (board) => new Promise((resolve, reject) => {
     });
 });
 
+const createList = async (list) => new Promise((resolve, reject) => {
+    request.post(plankaPath(apiBase, API_LISTS.replace(':boardId', list.boardId)), 
+        { json: { ...list }, headers: { Authorization: 'Bearer ' + token}}, (err, response, {item, code}) => {
+        if (err || response.statusCode !== 200) {
+            reject(new Error('Could not create list, status code: ' + response.statusCode + ' code: ' + code));
+            return;
+        }
+        resolve(item);
+    });
+});
+
 exports.login = login;
 exports.createImportProject = createImportProject;
 exports.createBoard = createBoard;
+exports.createList = createList;
