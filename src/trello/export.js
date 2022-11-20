@@ -20,10 +20,11 @@ const getTrelloLists = () => trelloBoard.lists;
 
 const getTrelloCardsOfList = (listId) => trelloBoard.cards.filter(l => l.idList === listId);
 
-const getChecklistOfCard = (cardId) => trelloBoard.checklists.filter(c => c.idCard === cardId);
+const getAllTrelloCheckItemsOfCard = (cardId) => 
+    trelloBoard.checklists.filter(c => c.idCard === cardId).map(checklist => checklist.checkItems).flat();
 
 exports.loadTrelloBoard = loadTrelloBoard;
 exports.getBoardName = getBoardName;
 exports.getTrelloLists = getTrelloLists;
 exports.getTrelloCardsOfList = getTrelloCardsOfList;
-exports.getChecklistOfCard = getChecklistOfCard;
+exports.getAllTrelloCheckItemsOfCard = getAllTrelloCheckItemsOfCard;
