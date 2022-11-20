@@ -1,11 +1,12 @@
 const { readAndValidateConfig } = require('./utils/config');
 const { importTrelloBoard } = require('./planka/import');
+const { getCommandLineParams } = require('./utils/cmd');
 
 const main = async () => {
     try {
         const config = await readAndValidateConfig();
-        // TODO read trello board file from cmd arguments here
-        await importTrelloBoard(config, 'sample-board-export.json');
+        const cmdParams = getCommandLineParams();
+        await importTrelloBoard(config, cmdParams.trelloFile);
     } catch (err) {
         console.error(err);
     }

@@ -4,7 +4,8 @@
   "description": "Import your Trello JSON Export to your self-hosted planka.",
   "main": "src/index.js",
   "scripts": {
-    "start": "node src/index.js",
+    "import-board": "node src/index.js",
+    "import-sample-board": "npm run import-board sample-board-export.json",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
