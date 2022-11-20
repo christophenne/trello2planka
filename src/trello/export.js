@@ -14,10 +14,16 @@ const loadTrelloBoard = async (filename) => new Promise((resolve, reject) => {
     });
 });
 
-const getLists = () => trelloBoard.lists;
+const getBoardName = () => trelloBoard.name;
 
-const getCardsOfList = (listId) => trelloBoard.cards.filter(l => l.idList === listId);
+const getTrelloLists = () => trelloBoard.lists;
+
+const getTrelloCardsOfList = (listId) => trelloBoard.cards.filter(l => l.idList === listId);
+
+const getChecklistOfCard = (cardId) => trelloBoard.checklists.filter(c => c.idCard === cardId);
 
 exports.loadTrelloBoard = loadTrelloBoard;
-exports.getLists = getLists;
-exports.getCardsOfList = getCardsOfList;
+exports.getBoardName = getBoardName;
+exports.getTrelloLists = getTrelloLists;
+exports.getTrelloCardsOfList = getTrelloCardsOfList;
+exports.getChecklistOfCard = getChecklistOfCard;
