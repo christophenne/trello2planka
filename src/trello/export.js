@@ -1,25 +1,29 @@
 const fs = require('fs');
 
-let trelloExport;
+let trelloBoard;
 
-const loadTrelloExport = async (filename) => new Promise((resolve, reject) => {
+const loadTrelloBoard = async (filename) => new Promise((resolve, reject) => {
     fs.readFile(filename, (err, data) => {
         const exp = data && JSON.parse(data);
         if (err) {
             reject(err);
             return;
         }
-        trelloExport = exp;
+        trelloBoard = exp;
         resolve(exp);
     });
 });
 
-const getOrganization = (id) => trelloExport.organizations.find(o => o.id === id);
+const getBoardName = () => trelloBoard.name;
 
-const getBoards = () => 
-    trelloExport.boards.map((board) => ({
-        name: '[' + getOrganization(board.idOrganization)?.displayName + '] ' + board.name
-    }));
+const getTrelloLists = () => trelloBoard.lists;
 
-exports.loadTrelloExport = loadTrelloExport;
-exports.getBoards = getBoards;
+const getTrelloCardsOfList = (listId) => trelloBoard.cards.filter(l => l.idList === listId);
+
+const getChecklistOfCard = (cardId) => trelloBoard.checklists.filter(c => c.idCard === cardId);
+
+exports.loadTrelloBoard = loadTrelloBoard;
+exports.getBoardName = getBoardName;
+exports.getTrelloLists = getTrelloLists;
+exports.getTrelloCardsOfList = getTrelloCardsOfList;
+exports.getChecklistOfCard = getChecklistOfCard;
