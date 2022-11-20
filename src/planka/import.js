@@ -1,5 +1,5 @@
 const { setupPlankaClient, createImportProject, createBoard, createList, createCard, createTask } = require('./client');
-const { loadTrelloBoard, getBoardName, getTrelloLists, getTrelloCardsOfList, getChecklistOfCard } = require('../trello/export');
+const { loadTrelloBoard, getBoardName, getTrelloLists, getTrelloCardsOfList, getAllTrelloCheckItemsOfCard } = require('../trello/export');
 const { getImportProjectName } = require('../utils/cmd');
 
 const importTrelloBoard = async (config, filename) => {
@@ -26,13 +26,14 @@ const importTrelloBoard = async (config, filename) => {
             // TODO storeCardMapping(trelloCard, plankaCard);
 
             // TODO find workaround for tasks/checklist mismapping
-            /* const checklists = getChecklistOfCard(card.id);
-            for(const checklist of checklists) {
+            for(const trelloCheckItem of getAllTrelloCheckItemsOfCard(trelloCard.id)) {
                 await createTask({
                     cardId: plankaCard.id,
-                    position: 
-                })
-            } */
+                    position: trelloCheckItem.pos,
+                    name: trelloCheckItem.name,
+                    isCompleted: trelloCheckItem.state === 'complete'
+                });
+            }
 
             // TODO labels
 
