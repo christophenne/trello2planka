@@ -1,9 +1,9 @@
-const { loginToPlanka, createImportProject, createBoard, createList, createCard, createTask } = require('./api');
+const { setupPlankaClient, createImportProject, createBoard, createList, createCard, createTask } = require('./client');
 const { loadTrelloBoard, getBoardName, getTrelloLists, getTrelloCardsOfList, getChecklistOfCard } = require('../trello/export');
 
 const importTrelloBoard = async (config, filename) => {
     await loadTrelloBoard(filename);
-    await loginToPlanka(config.PLANKA_API_BASE, config.PLANKA_IMPORT_USER, config.PLANKA_IMPORT_PASSWORD);
+    await setupPlankaClient(config.PLANKA_API_BASE, config.PLANKA_IMPORT_USER, config.PLANKA_IMPORT_PASSWORD);
     const { plankaBoard } = await createProjectAndBoard(config);
     // TODO storeBoardMapping(trelloBoard, plankaBoard);
 
