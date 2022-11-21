@@ -1,5 +1,5 @@
 const request = require('request');
-const { API_ACCESS_TOKENS, API_PROJECTS, API_BOARDS, API_LISTS, API_CARDS, API_TASKS } = require('./paths');
+const { API_ACCESS_TOKENS, API_ME, API_PROJECTS, API_BOARDS, API_LISTS, API_CARDS, API_TASKS, API_COMMENTS } = require('./paths');
 
 let apiBase;
 let token;
@@ -20,6 +20,8 @@ const setupPlankaClient = async (apiBaseUrl, emailOrUsername, password) => new P
     });
 });
 
+const getMe = async () => await authenticatedGet(API_ME);
+
 const createImportProject = async (projectName) => await authenticatedPost(API_PROJECTS, {}, {name: projectName});
 
 const createBoard = async (board) => await authenticatedPost(API_BOARDS, {':projectId': board.projectId}, board);
@@ -30,6 +32,8 @@ const createCard = async (card) => await authenticatedPost(API_CARDS, {':boardId
 
 const createTask = async (task) => await authenticatedPost(API_TASKS, {':cardId': task.cardId}, task);
 
+const createComment = async (comment) => await authenticatedPost(API_COMMENTS, {':cardId': comment.cardId}, comment);
+
 const authenticatedPost = async (resource, parameters, body) => new Promise((resolve, reject) => {
     const path = resolvePlankaPath(apiBase, resource, parameters);
     console.log('authenticated POST to ' + path);
@@ -37,6 +41,20 @@ const authenticatedPost = async (resource, parameters, body) => new Promise((res
         problems && console.log(problems);
         if (err || response.statusCode !== 200) {
             reject(new Error('Failed to POST ' + path + ', status code: ' + response.statusCode + ' code: ' + code));
+            return;
+        }
+        console.log('status = ' + response.statusCode);
+        resolve(item);
+    });
+});
+
+const authenticatedGet = async (resource) => new Promise((resolve, reject) => {
+    const path = resolvePlankaPath(apiBase, resource, {});
+    console.log('authenticated GET to ' + path);
+    request.get(path, { json: true, headers: { Authorization: 'Bearer ' + token } }, (err, response, {item, code, problems}) => {
+        problems && console.log(problems);
+        if (err || response.statusCode !== 200) {
+            reject(new Error('Failed to GET ' + path + ', status code: ' + response.statusCode + ' code: ' + code));
             return;
         }
         console.log('status = ' + response.statusCode);
@@ -58,8 +76,10 @@ const resolveParams = (resource, paramObj) => {
 const headersAndBody = (body) => ({ json: { ...body }, headers: { Authorization: 'Bearer ' + token }});
 
 exports.setupPlankaClient = setupPlankaClient;
+exports.getMe = getMe;
 exports.createImportProject = createImportProject;
 exports.createBoard = createBoard;
 exports.createList = createList;
 exports.createCard = createCard;
 exports.createTask = createTask;
+exports.createComment = createComment;
