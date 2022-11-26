@@ -25,7 +25,7 @@ Note that this merely serves as a proof of concept / playground for now.
 
 * Only one board at a time. 
 * For simplicity, users/members are not taken care of at all. 
-* Archiving is not taken care of yet.
+* Archived lists and cards are not imported, since planka has no archiving feature. 
 * Not imported yet: attachments, labels, history/actions
 
 ## Compatibility
