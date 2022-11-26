@@ -16,9 +16,9 @@ const loadTrelloBoard = async (filename) => new Promise((resolve, reject) => {
 
 const getBoardName = () => trelloBoard.name;
 
-const getTrelloLists = () => trelloBoard.lists;
+const getTrelloLists = () => trelloBoard.lists.filter(list => !list.closed);
 
-const getTrelloCardsOfList = (listId) => trelloBoard.cards.filter(l => l.idList === listId);
+const getTrelloCardsOfList = (listId) => trelloBoard.cards.filter(l => (l.idList === listId) && !l.closed);
 
 const getAllTrelloCheckItemsOfCard = (cardId) => 
     trelloBoard.checklists.filter(c => c.idCard === cardId).map(checklist => checklist.checkItems).flat();
