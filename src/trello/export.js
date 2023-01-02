@@ -16,6 +16,14 @@ const loadTrelloBoard = async (filename) => new Promise((resolve, reject) => {
 
 const getBoardName = () => trelloBoard.name;
 
+const getUsedTrelloLabels = () => {
+    const result = {};
+    trelloBoard.cards.map((card) => card.labels).flat().forEach((label) => {
+        result[label.id] = label;
+    });
+    return Object.values(result);
+};
+
 const getTrelloLists = () => trelloBoard.lists.filter(list => !list.closed);
 
 const getTrelloCardsOfList = (listId) => trelloBoard.cards.filter(l => (l.idList === listId) && !l.closed);
@@ -29,6 +37,7 @@ const getTrelloCommentsOfCard = (cardId) =>
 exports.loadTrelloBoard = loadTrelloBoard;
 exports.getBoardName = getBoardName;
 exports.getTrelloLists = getTrelloLists;
+exports.getUsedTrelloLabels = getUsedTrelloLabels;
 exports.getTrelloCardsOfList = getTrelloCardsOfList;
 exports.getAllTrelloCheckItemsOfCard = getAllTrelloCheckItemsOfCard;
 exports.getTrelloCommentsOfCard = getTrelloCommentsOfCard;

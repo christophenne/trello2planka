@@ -1,5 +1,16 @@
 const request = require('request');
-const { API_ACCESS_TOKENS, API_ME, API_PROJECTS, API_BOARDS, API_LISTS, API_CARDS, API_TASKS, API_COMMENTS } = require('./paths');
+const { 
+    API_ACCESS_TOKENS, 
+    API_ME, 
+    API_PROJECTS, 
+    API_BOARDS, 
+    API_LABELS, 
+    API_CARD_LABELS, 
+    API_LISTS, 
+    API_CARDS, 
+    API_TASKS, 
+    API_COMMENTS 
+} = require('./paths');
 
 let apiBase;
 let token;
@@ -25,6 +36,10 @@ const getMe = async () => await authenticatedGet(API_ME);
 const createImportProject = async (projectName) => await authenticatedPost(API_PROJECTS, {}, {name: projectName});
 
 const createBoard = async (board) => await authenticatedPost(API_BOARDS, {':projectId': board.projectId}, board);
+
+const createLabel = async (label) => await authenticatedPost(API_LABELS, {':boardId': label.boardId}, label);
+
+const createCardLabel = async (cardLabel) => await authenticatedPost(API_CARD_LABELS, {':cardId': cardLabel.cardId}, cardLabel);
 
 const createList = async (list) => await authenticatedPost(API_LISTS, {':boardId': list.boardId}, list);
 
@@ -79,6 +94,8 @@ exports.setupPlankaClient = setupPlankaClient;
 exports.getMe = getMe;
 exports.createImportProject = createImportProject;
 exports.createBoard = createBoard;
+exports.createLabel = createLabel;
+exports.createCardLabel = createCardLabel;
 exports.createList = createList;
 exports.createCard = createCard;
 exports.createTask = createTask;
