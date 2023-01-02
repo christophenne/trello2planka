@@ -2,7 +2,7 @@
 
 Import your Trello JSON Export to your self-hosted [planka](https://github.com/plankanban/planka).
 
-Note that this merely serves as a proof of concept / playground for now. 
+Note that this merely serves as a proof of concept / playground. Most of this has already been adapted and integrated directly to planka, where you can use the import feature directly in the web application. 
 
 ## Usage for now
 
@@ -19,6 +19,7 @@ Note that this merely serves as a proof of concept / playground for now.
   * description
   * tasks (with limitations, see #5)
   * comments
+  * labels
 
 
 ## Limitations
@@ -26,11 +27,11 @@ Note that this merely serves as a proof of concept / playground for now.
 * Only one board at a time. 
 * For simplicity, users/members are not taken care of at all. 
 * Archived lists and cards are not imported, since planka has no archiving feature. 
-* Not imported yet: attachments, labels, history/actions
+* Not imported yet: attachments, history/actions
 
 ## Compatibility
 
-This is being developed with planka version 1.8.4.
+This is being developed with planka version 1.9.2.
 
 ## License
 

@@ -1,7 +1,8 @@
-const { setupPlankaClient, getMe, createImportProject, createBoard, createList, createCard, createTask, createComment } = require('./client');
-const { loadTrelloBoard, getBoardName, getTrelloLists, getTrelloCardsOfList, getAllTrelloCheckItemsOfCard, getTrelloCommentsOfCard } = require('../trello/export');
+const { setupPlankaClient, getMe, createImportProject, createBoard, createLabel, createCardLabel, createList, createCard, createTask, createComment } = require('./client');
+const { loadTrelloBoard, getBoardName, getTrelloLists, getTrelloCardsOfList, getAllTrelloCheckItemsOfCard, getTrelloCommentsOfCard, getUsedTrelloLabels } = require('../trello/export');
 const { getImportProjectName } = require('../utils/cmd');
 const { getImportedCommentText } = require('./comments');
+const { getPlankaLabelColor } = require('./labels');
 
 const importTrelloBoard = async (config, filename) => {
     await loadTrelloBoard(filename);
@@ -9,7 +10,8 @@ const importTrelloBoard = async (config, filename) => {
     const me = await getMe();
     const { plankaBoard } = await createProjectAndBoard();
 
-    await importLists(plankaBoard, me);
+    const trelloToPlankaLabels = await importLabels(plankaBoard);
+    await importLists(plankaBoard, {me, trelloToPlankaLabels});
 }
 
 async function createProjectAndBoard() {
@@ -23,18 +25,31 @@ async function createProjectAndBoard() {
     return { project, plankaBoard };
 }
 
-async function importLists(plankaBoard, me) {
+async function importLabels(plankaBoard) {
+    const trelloToPlankaLabels = {};
+    for(const trelloLabel of getUsedTrelloLabels()) {
+        const plankaLabel = await createLabel({
+            boardId: plankaBoard.id,
+            name: trelloLabel.name || null,
+            color: getPlankaLabelColor(trelloLabel.color)
+        });
+        trelloToPlankaLabels[trelloLabel.id] = plankaLabel.id;
+    }
+    return trelloToPlankaLabels;
+}
+
+async function importLists(plankaBoard, {me, trelloToPlankaLabels}) {
     for (const trelloList of getTrelloLists()) {
         const plankaList = await createList({
             name: trelloList.name,
             boardId: plankaBoard.id,
             position: trelloList.pos
         });
-        await importCards(trelloList, plankaBoard, plankaList, me);
+        await importCards(trelloList, plankaBoard, plankaList, {me, trelloToPlankaLabels});
     }
 }
 
-async function importCards(trelloList, plankaBoard, plankaList, me) {
+async function importCards(trelloList, plankaBoard, plankaList, {me, trelloToPlankaLabels}) {
     for (const trelloCard of getTrelloCardsOfList(trelloList.id)) {
         const plankaCard = await createCard({
             boardId: plankaBoard.id,
@@ -44,11 +59,21 @@ async function importCards(trelloList, plankaBoard, plankaList, me) {
             description: trelloCard.desc || null
         });
         
+        await importCardLabels(trelloCard, plankaCard, trelloToPlankaLabels);
         await importTasks(trelloCard, plankaCard);
         await importComments(trelloCard, plankaCard, me);
 
         // TODO labels
         // TODO attachments        
+    }
+}
+
+async function importCardLabels(trelloCard, plankaCard, trelloToPlankaLabels) {
+    for (const trelloLabel of trelloCard.labels) {
+        await createCardLabel({
+            cardId: plankaCard.id,
+            labelId: trelloToPlankaLabels[trelloLabel.id]
+        });
     }
 }
 
