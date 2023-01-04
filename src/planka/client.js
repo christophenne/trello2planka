@@ -15,17 +15,22 @@ const {
 let apiBase;
 let token;
 
-const setupPlankaClient = async (apiBaseUrl, emailOrUsername, password) => new Promise((resolve, reject) => {
+const setupPlankaClient = async (config) => new Promise((resolve, reject) => {
     if(apiBase || token) {
         reject(new Error('Planka API already set up.'));
         return;
     }
-    request.post(resolvePlankaPath(apiBaseUrl, API_ACCESS_TOKENS), { json: { emailOrUsername, password }}, (err, response, {item, code}) => {
+    request.post(resolvePlankaPath(config.planka.api, API_ACCESS_TOKENS), { 
+        json: { 
+            emailOrUsername: config.planka.importUser, 
+            password: config.planka.importPassword 
+        }
+    }, (err, response, {item, code}) => {
         if (err || response.statusCode !== 200) {
             reject(new Error('Could not obtain access token, status code: ' + response.statusCode + ' code: ' + code));
             return;
         }
-        apiBase = apiBaseUrl;
+        apiBase = config.planka.api;
         token = item;
         resolve(item);
     });
