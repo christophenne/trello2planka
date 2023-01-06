@@ -1,6 +1,6 @@
-const { readAndValidateConfig } = require('./utils/config');
-const { importTrelloBoard } = require('./planka/import');
-const { getTrelloFilename } = require('./utils/cmd');
+import { readAndValidateConfig } from './utils/config.js';
+import { importTrelloBoard } from './planka/import.js';
+import { getTrelloFilename } from './utils/cmd.js';
 
 const main = async () => {
     try {

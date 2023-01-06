@@ -5,8 +5,9 @@
   "main": "src/index.js",
   "scripts": {
     "import-board": "node src/index.js",
-    "import-sample-board": "npm run import-board -- --import-project-name=\"Trello Sample Import\" --file=sample-board-export.json"
+    "import-sample-board": "npm run import-board -- --file=sample-board-export.json"
   },
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/christophenne/trello2planka.git"
@@ -23,6 +24,6 @@
   },
   "homepage": "https://github.com/christophenne/trello2planka#readme",
   "dependencies": {
-    "request": "^2.88.2"
+    "node-fetch": "^3.3.0"
   }
 }

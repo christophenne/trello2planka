@@ -1,21 +1,22 @@
-const { setupPlankaClient, getMe, createImportProject, createBoard, createLabel, createCardLabel, createList, createCard, createTask, createComment } = require('./client');
-const { loadTrelloBoard, getBoardName, getTrelloLists, getTrelloCardsOfList, getAllTrelloCheckItemsOfCard, getTrelloCommentsOfCard, getUsedTrelloLabels } = require('../trello/export');
-const { getImportProjectName } = require('../utils/cmd');
-const { getImportedCommentText } = require('./comments');
-const { getPlankaLabelColor } = require('./labels');
+import { setupPlankaClient, getMe, createImportProject, createBoard, createLabel, createCardLabel, createList, createCard, createTask, createComment, createAttachment } from './client.js';
+import { loadTrelloBoard, getBoardName, getTrelloLists, getTrelloCardsOfList, getAllTrelloCheckItemsOfCard, getTrelloCommentsOfCard, getUsedTrelloLabels } from '../trello/export.js';
+import { getImportedCommentText } from './comments.js';
+import { getPlankaLabelColor } from './labels.js';
+import { setupTrelloClient, downloadAttachment } from '../trello/client.js';
 
-const importTrelloBoard = async (config, filename) => {
+export const importTrelloBoard = async (config, filename) => {
     await loadTrelloBoard(filename);
-    await setupPlankaClient(config.PLANKA_API_BASE, config.PLANKA_IMPORT_USER, config.PLANKA_IMPORT_PASSWORD);
-    const me = await getMe();
-    const { plankaBoard } = await createProjectAndBoard();
+    await setupPlankaClient(config);
+    setupTrelloClient(config);
 
+    const me = await getMe();
+    const { plankaBoard } = await createProjectAndBoard(config?.importOptions?.createdProjectName);
     const trelloToPlankaLabels = await importLabels(plankaBoard);
-    await importLists(plankaBoard, {me, trelloToPlankaLabels});
+    await importLists(plankaBoard, {config, me, trelloToPlankaLabels});
 }
 
-async function createProjectAndBoard() {
-    const project = await createImportProject(getImportProjectName() || 'Trello Import');
+async function createProjectAndBoard(createdProjectName) {
+    const project = await createImportProject(createdProjectName || 'Trello Import');
     const plankaBoard = await createBoard({
         name: getBoardName(),
         projectId: project.id,
@@ -38,18 +39,18 @@ async function importLabels(plankaBoard) {
     return trelloToPlankaLabels;
 }
 
-async function importLists(plankaBoard, {me, trelloToPlankaLabels}) {
+async function importLists(plankaBoard, {config, me, trelloToPlankaLabels}) {
     for (const trelloList of getTrelloLists()) {
         const plankaList = await createList({
             name: trelloList.name,
             boardId: plankaBoard.id,
             position: trelloList.pos
         });
-        await importCards(trelloList, plankaBoard, plankaList, {me, trelloToPlankaLabels});
+        await importCards(trelloList, plankaBoard, plankaList, {config, me, trelloToPlankaLabels});
     }
 }
 
-async function importCards(trelloList, plankaBoard, plankaList, {me, trelloToPlankaLabels}) {
+async function importCards(trelloList, plankaBoard, plankaList, {config, me, trelloToPlankaLabels}) {
     for (const trelloCard of getTrelloCardsOfList(trelloList.id)) {
         const plankaCard = await createCard({
             boardId: plankaBoard.id,
@@ -62,9 +63,7 @@ async function importCards(trelloList, plankaBoard, plankaList, {me, trelloToPla
         await importCardLabels(trelloCard, plankaCard, trelloToPlankaLabels);
         await importTasks(trelloCard, plankaCard);
         await importComments(trelloCard, plankaCard, me);
-
-        // TODO labels
-        // TODO attachments        
+        await importAttachments(trelloCard, plankaCard, config);    
     }
 }
 
@@ -93,7 +92,7 @@ async function importComments(trelloCard, plankaCard, me) {
     const trelloComments = getTrelloCommentsOfCard(trelloCard.id);
     trelloComments.sort((a,b) => new Date(a.date).getTime() - new Date(b.date).getTime());
     for (const trelloComment of trelloComments) {
-        const plankaComment = await createComment({
+        await createComment({
             cardId: plankaCard.id,
             type: 'commentCard',
             text: getImportedCommentText(trelloComment),
@@ -102,4 +101,12 @@ async function importComments(trelloCard, plankaCard, me) {
     }
 }
 
-exports.importTrelloBoard = importTrelloBoard;
+async function importAttachments(trelloCard, plankaCard, config) {
+    if(!config?.importOptions?.fetchAttachments) {
+        return;
+    }
+    for(const trelloAttachment of trelloCard.attachments) {
+        await downloadAttachment(trelloCard.id, trelloAttachment.id, trelloAttachment.fileName);
+        await createAttachment(plankaCard.id, trelloAttachment.fileName);
+    }
+}

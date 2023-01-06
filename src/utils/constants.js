@@ -1,0 +1,1 @@
+export const ATTACHMENT_TMP_FILE = '_ATTACHMENT_TMP_FILE';

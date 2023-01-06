@@ -1,5 +1,16 @@
 {
-  "PLANKA_API_BASE": "http://localhost:3000/api/",
-  "PLANKA_IMPORT_USER": "demo",
-  "PLANKA_IMPORT_PASSWORD": "demo"
+  "importOptions": {
+    "createdProjectName": "Trello Sample Import",
+    "fetchAttachments": true
+  },
+  "planka": {
+    "api": "http://localhost:3000/api/",
+    "importUser": "demo",
+    "importPassword": "demo"
+  },
+  "trello": {
+    "api": "https://api.trello.com/1/",
+    "apiKey": "<your personal trello api key - keep it secret>",
+    "apiToken": "<your personal trello api token - keep it secret>"
+  }
 }
