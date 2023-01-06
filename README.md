@@ -2,9 +2,9 @@
 
 Import your Trello JSON Export to your self-hosted [planka](https://github.com/plankanban/planka).
 
-Note that this merely serves as a proof of concept / playground. Most of this has already been adapted and integrated directly to planka, where you can use the import feature directly in the web application. 
+Note that this merely serves as a proof of concept / playground. Most of this has already been adapted and integrated directly to planka, where you can use the import feature directly in the web application. The only thing that is not available in the web application right now, is the import of the Trello attachments. 
 
-## Usage for now
+## Usage
 
 * Install dependencies with `npm install`. 
 * Copy [sample-config.json](sample-config.json) to `config.json` and replace the sample values with your individual ones.
