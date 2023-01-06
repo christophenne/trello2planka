@@ -8,3 +8,4 @@ export const API_LISTS = 'boards/:boardId/lists';
 export const API_CARDS = 'boards/:boardId/cards';
 export const API_TASKS = 'cards/:cardId/tasks';
 export const API_COMMENTS = 'cards/:cardId/comment-actions';
+export const API_ATTACHMENTS = 'cards/:cardId/attachments';

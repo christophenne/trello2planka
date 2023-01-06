@@ -1,4 +1,10 @@
+import {createWriteStream} from 'node:fs';
+import {pipeline} from 'node:stream';
+import {promisify} from 'node:util'
 import fetch from 'node-fetch';
+import {ATTACHMENT_TMP_FILE} from '../utils/constants.js';
+
+const streamPipeline = promisify(pipeline);
 
 let api;
 let apiKey;
@@ -16,20 +22,13 @@ export const setupTrelloClient = (config) => {
     apiToken = config.trello.apiToken;
 }
 
-export const downloadAttachment = async (config, cardId, attachmentId, fileName) => new Promise((resolve, reject) => {
+export const downloadAttachment = async (cardId, attachmentId, fileName) => {
     const path = api + `cards/${cardId}/attachments/${attachmentId}/download/${fileName}`;
     console.log('fetching attachment from Trello API, path = ', path);
-    request(path, { headers: getHeaders() }, (err, response, body) => {
-        if (err) {
-            console.error(err);
-            reject(err);
-            return;
-        }
-        console.log('After request, status = ' + response.statusCode);
-        
-        resolve(body);
-    });
-});
+    const response = await fetch(path, { headers: getHeaders() });
+    console.log('status = ', response.status);
+    return streamPipeline(response.body, createWriteStream(ATTACHMENT_TMP_FILE)); // TODO use streams instead of writing to disk temporarily
+};
 
 const getHeaders = () => ({
     Authorization: 'OAuth oauth_consumer_key=\"' + apiKey + '\", oauth_token=\"' + apiToken + '\"'

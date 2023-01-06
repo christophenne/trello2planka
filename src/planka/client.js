@@ -1,4 +1,4 @@
-import fetch from 'node-fetch';
+import fetch, {FormData, blobFrom} from 'node-fetch';
 import { 
     API_ACCESS_TOKENS, 
     API_ME, 
@@ -9,8 +9,11 @@ import {
     API_LISTS, 
     API_CARDS, 
     API_TASKS, 
-    API_COMMENTS 
+    API_COMMENTS, 
+    API_ATTACHMENTS
 } from './paths.js';
+import {rmSync} from 'fs';
+import {ATTACHMENT_TMP_FILE} from '../utils/constants.js';
 
 let apiBase;
 let token;
@@ -54,6 +57,8 @@ export const createTask = async (task) => await authenticatedPost(API_TASKS, {':
 
 export const createComment = async (comment) => await authenticatedPost(API_COMMENTS, {':cardId': comment.cardId}, comment);
 
+export const createAttachment = async (cardId, fileName) => await authenticatedPostFileUpload(API_ATTACHMENTS, {':cardId': cardId}, fileName);
+
 const authenticatedPost = async (resource, parameters, body) => {
     const path = resolvePlankaPath(apiBase, resource, parameters);
     console.log('authenticated POST to ' + path);
@@ -68,6 +73,25 @@ const authenticatedPost = async (resource, parameters, body) => {
     console.log('status = ', response.status);
     return item;
 };
+
+const authenticatedPostFileUpload = async (resource, parameters, fileName) => {
+    const path = resolvePlankaPath(apiBase, resource, parameters);
+    console.log('authenticated POST with file upload to ' + path);
+    const formData = new FormData();
+    formData.set('file', await blobFrom(ATTACHMENT_TMP_FILE), fileName);
+    const response = await fetch(path, {
+        method: 'POST',
+        body: formData,
+        ...getHeaders()
+    });
+    const {item, code, problems} = await response.json();
+    if(!item || code || problems) {
+        throw new Error(`authenticated POST failed, status code = ${response.status}, code = ${code}, problems = ${problems}`);
+    }
+    rmSync(ATTACHMENT_TMP_FILE);
+    console.log('status = ', response.status);
+    return item;
+}
 
 const authenticatedGet = async (resource) =>  {
     const path = resolvePlankaPath(apiBase, resource, {});
@@ -92,4 +116,6 @@ const resolveParams = (resource, paramObj) => {
     return resolved;
 };
 
-const headersAndBody = (body) => ({ body: JSON.stringify({...body }), headers: { Authorization: 'Bearer ' + token }});
+const headersAndBody = (body) => ({ body: JSON.stringify({...body }), ...getHeaders()});
+
+const getHeaders = () => ({ headers: { Authorization: 'Bearer ' + token } });

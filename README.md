@@ -9,7 +9,7 @@ Note that this merely serves as a proof of concept / playground. Most of this ha
 * Install dependencies with `npm install`. 
 * Copy [sample-config.json](sample-config.json) to `config.json` and replace the sample values with your individual ones.
 * Download the Trello JSON Export of your board and put it to `trello-export.json` or something like that.
-* Start the Import with `npm run import-board -- --import-project-name="Trello Import" --file=trello-export.json`. Of course you can also try it with the provided sample file first, by running `npm run import-sample-board`.
+* Start the Import with `npm run import-board --  --file=trello-export.json`. Of course you can also try it with the provided sample file first, by running `npm run import-sample-board`.
 
 ## Features
 
@@ -20,14 +20,18 @@ Note that this merely serves as a proof of concept / playground. Most of this ha
   * tasks (with limitations, see #5)
   * comments
   * labels
+  * attachments, if configured (needs Trello API config)
 
+### Configuration
+
+If you want to optionally import card attachments from Trello, you need to have a Trello API key and token (see https://developer.atlassian.com/cloud/trello/guides/rest-api/api-introduction/#managing-your-api-key). Put them into the `config.json` as shown in the `sample-config.json` and set `importOptions.fetchAttachments` to `true`. 
 
 ## Limitations
 
 * Only one board at a time. 
 * For simplicity, users/members are not taken care of at all. 
 * Archived lists and cards are not imported, since planka has no archiving feature. 
-* Not imported yet: attachments, history/actions
+* Not imported yet: history/actions
 
 ## Compatibility
 

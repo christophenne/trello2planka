@@ -1,4 +1,4 @@
-import { setupPlankaClient, getMe, createImportProject, createBoard, createLabel, createCardLabel, createList, createCard, createTask, createComment } from './client.js';
+import { setupPlankaClient, getMe, createImportProject, createBoard, createLabel, createCardLabel, createList, createCard, createTask, createComment, createAttachment } from './client.js';
 import { loadTrelloBoard, getBoardName, getTrelloLists, getTrelloCardsOfList, getAllTrelloCheckItemsOfCard, getTrelloCommentsOfCard, getUsedTrelloLabels } from '../trello/export.js';
 import { getImportedCommentText } from './comments.js';
 import { getPlankaLabelColor } from './labels.js';
@@ -7,7 +7,7 @@ import { setupTrelloClient, downloadAttachment } from '../trello/client.js';
 export const importTrelloBoard = async (config, filename) => {
     await loadTrelloBoard(filename);
     await setupPlankaClient(config);
-    //setupTrelloClient(config);
+    setupTrelloClient(config);
 
     const me = await getMe();
     const { plankaBoard } = await createProjectAndBoard(config?.importOptions?.createdProjectName);
@@ -92,7 +92,7 @@ async function importComments(trelloCard, plankaCard, me) {
     const trelloComments = getTrelloCommentsOfCard(trelloCard.id);
     trelloComments.sort((a,b) => new Date(a.date).getTime() - new Date(b.date).getTime());
     for (const trelloComment of trelloComments) {
-        const plankaComment = await createComment({
+        await createComment({
             cardId: plankaCard.id,
             type: 'commentCard',
             text: getImportedCommentText(trelloComment),
@@ -106,7 +106,7 @@ async function importAttachments(trelloCard, plankaCard, config) {
         return;
     }
     for(const trelloAttachment of trelloCard.attachments) {
-        // const savedFile = await downloadAttachment(config, trelloCard.id, trelloAttachment.id, trelloAttachment.fileName);
-
+        await downloadAttachment(trelloCard.id, trelloAttachment.id, trelloAttachment.fileName);
+        await createAttachment(plankaCard.id, trelloAttachment.fileName);
     }
 }
