@@ -1,4 +1,5 @@
 node_modules/
+reports/*.json
 config.json
 personal-boards/
 _ATTACHMENT_TMP_FILE

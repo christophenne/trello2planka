@@ -3,14 +3,18 @@ import { loadTrelloBoard, getBoardName, getTrelloLists, getTrelloCardsOfList, ge
 import { getImportedCommentText } from './comments.js';
 import { getPlankaLabelColor } from './labels.js';
 import { setupTrelloClient, downloadAttachment } from '../trello/client.js';
+import { reportLabelMapping, reportProjectAndBoard, reportStartup } from '../utils/report.js';
 
 export const importTrelloBoard = async (config, filename) => {
+    reportStartup(config, filename);
     await loadTrelloBoard(filename);
     await setupPlankaClient(config);
     setupTrelloClient(config);
 
     const me = await getMe();
-    const { plankaBoard } = await createProjectAndBoard(config?.importOptions?.createdProjectName);
+    const { project, plankaBoard } = await createProjectAndBoard(config?.importOptions?.createdProjectName);
+    reportProjectAndBoard(project, plankaBoard);
+
     const trelloToPlankaLabels = await importLabels(plankaBoard);
     await importLists(plankaBoard, {config, me, trelloToPlankaLabels});
 }
@@ -34,8 +38,9 @@ async function importLabels(plankaBoard) {
             name: trelloLabel.name || null,
             color: getPlankaLabelColor(trelloLabel.color)
         });
-        trelloToPlankaLabels[trelloLabel.id] = plankaLabel.id;
+        trelloToPlankaLabels[trelloLabel.id] = plankaLabel;
     }
+    reportLabelMapping(trelloToPlankaLabels);
     return trelloToPlankaLabels;
 }
 
@@ -71,7 +76,7 @@ async function importCardLabels(trelloCard, plankaCard, trelloToPlankaLabels) {
     for (const trelloLabel of trelloCard.labels) {
         await createCardLabel({
             cardId: plankaCard.id,
-            labelId: trelloToPlankaLabels[trelloLabel.id]
+            labelId: trelloToPlankaLabels[trelloLabel.id].id
         });
     }
 }
