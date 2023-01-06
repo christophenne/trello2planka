@@ -26,7 +26,5 @@ const PLANKA_LABEL_COLORS = [
     'light-cocoa',
 ];
 
-const getPlankaLabelColor = (trelloLabelColor) => 
+export const getPlankaLabelColor = (trelloLabelColor) => 
     PLANKA_LABEL_COLORS.find((color) => color.indexOf(trelloLabelColor) !== -1) || 'desert-sand';
-
-exports.getPlankaLabelColor = getPlankaLabelColor;

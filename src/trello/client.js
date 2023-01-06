@@ -1,10 +1,10 @@
-const request = require('request');
+import fetch from 'node-fetch';
 
 let api;
 let apiKey;
 let apiToken;
 
-const setupTrelloClient = (config) => {
+export const setupTrelloClient = (config) => {
     if(api || apiKey || apiToken) {
         throw new Error('Trello API already set up.');
     }
@@ -16,7 +16,7 @@ const setupTrelloClient = (config) => {
     apiToken = config.trello.apiToken;
 }
 
-const downloadAttachment = async (config, cardId, attachmentId, fileName) => new Promise((resolve, reject) => {
+export const downloadAttachment = async (config, cardId, attachmentId, fileName) => new Promise((resolve, reject) => {
     const path = api + `cards/${cardId}/attachments/${attachmentId}/download/${fileName}`;
     console.log('fetching attachment from Trello API, path = ', path);
     request(path, { headers: getHeaders() }, (err, response, body) => {
@@ -34,6 +34,3 @@ const downloadAttachment = async (config, cardId, attachmentId, fileName) => new
 const getHeaders = () => ({
     Authorization: 'OAuth oauth_consumer_key=\"' + apiKey + '\", oauth_token=\"' + apiToken + '\"'
 });
-
-exports.setupTrelloClient = setupTrelloClient;
-exports.downloadAttachment = downloadAttachment;

@@ -1,13 +1,13 @@
-const { setupPlankaClient, getMe, createImportProject, createBoard, createLabel, createCardLabel, createList, createCard, createTask, createComment } = require('./client');
-const { loadTrelloBoard, getBoardName, getTrelloLists, getTrelloCardsOfList, getAllTrelloCheckItemsOfCard, getTrelloCommentsOfCard, getUsedTrelloLabels } = require('../trello/export');
-const { getImportedCommentText } = require('./comments');
-const { getPlankaLabelColor } = require('./labels');
-const { setupTrelloClient, downloadAttachment } = require('../trello/client');
+import { setupPlankaClient, getMe, createImportProject, createBoard, createLabel, createCardLabel, createList, createCard, createTask, createComment } from './client.js';
+import { loadTrelloBoard, getBoardName, getTrelloLists, getTrelloCardsOfList, getAllTrelloCheckItemsOfCard, getTrelloCommentsOfCard, getUsedTrelloLabels } from '../trello/export.js';
+import { getImportedCommentText } from './comments.js';
+import { getPlankaLabelColor } from './labels.js';
+import { setupTrelloClient, downloadAttachment } from '../trello/client.js';
 
-const importTrelloBoard = async (config, filename) => {
+export const importTrelloBoard = async (config, filename) => {
     await loadTrelloBoard(filename);
     await setupPlankaClient(config);
-    setupTrelloClient(config);
+    //setupTrelloClient(config);
 
     const me = await getMe();
     const { plankaBoard } = await createProjectAndBoard(config?.importOptions?.createdProjectName);
@@ -106,9 +106,7 @@ async function importAttachments(trelloCard, plankaCard, config) {
         return;
     }
     for(const trelloAttachment of trelloCard.attachments) {
-        const savedFile = await downloadAttachment(config, trelloCard.id, trelloAttachment.id, trelloAttachment.fileName);
+        // const savedFile = await downloadAttachment(config, trelloCard.id, trelloAttachment.id, trelloAttachment.fileName);
 
     }
 }
-
-exports.importTrelloBoard = importTrelloBoard;

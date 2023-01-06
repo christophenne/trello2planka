@@ -1,6 +1,6 @@
-const fs = require('fs');
+import fs from 'fs';
 
-const readAndValidateConfig = async () => new Promise((resolve, reject) => {
+export const readAndValidateConfig = async () => new Promise((resolve, reject) => {
     fs.readFile('config.json', (err, data) => {
         const config = data && JSON.parse(data);
         if (err || !config?.planka?.api || !config?.planka?.importUser || !config?.planka?.importPassword) {
@@ -12,5 +12,3 @@ const readAndValidateConfig = async () => new Promise((resolve, reject) => {
         resolve(config);
     });
 });
-
-exports.readAndValidateConfig = readAndValidateConfig;
