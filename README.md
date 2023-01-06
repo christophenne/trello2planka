@@ -35,7 +35,7 @@ If you want to optionally import card attachments from Trello, you need to have 
 
 ## Compatibility
 
-This is being developed with planka version 1.9.2.
+trello2planka is currently compatible with planka version 1.9.2 and not downwards-compatible anymore.
 
 ## License
 

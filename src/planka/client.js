@@ -51,7 +51,7 @@ export const createCardLabel = async (cardLabel) => await authenticatedPost(API_
 
 export const createList = async (list) => await authenticatedPost(API_LISTS, {':boardId': list.boardId}, list);
 
-export const createCard = async (card) => await authenticatedPost(API_CARDS, {':boardId': card.boardId}, card);
+export const createCard = async (card) => await authenticatedPost(API_CARDS, {':listId': card.listId}, card);
 
 export const createTask = async (task) => await authenticatedPost(API_TASKS, {':cardId': task.cardId}, task);
 
