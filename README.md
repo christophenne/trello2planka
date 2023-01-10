@@ -21,6 +21,7 @@ Note that this merely serves as a proof of concept / playground. Most of this ha
   * comments
   * labels
   * attachments, if configured (needs Trello API config)
+* JSON Report containing the mapping of Trello items to created planka items
 
 ### Configuration
 
