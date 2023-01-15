@@ -33,11 +33,12 @@ async function createProjectAndBoard(createdProjectName) {
 
 async function importLabels(plankaBoard) {
     const trelloToPlankaLabels = {};
-    for(const trelloLabel of getUsedTrelloLabels()) {
+    for(const [idx, trelloLabel] of getUsedTrelloLabels().entries()) {
         const plankaLabel = await createLabel({
             boardId: plankaBoard.id,
             name: trelloLabel.name || null,
-            color: getPlankaLabelColor(trelloLabel.color)
+            color: getPlankaLabelColor(trelloLabel.color),
+            position: idx
         });
         trelloToPlankaLabels[trelloLabel.id] = plankaLabel;
     }
