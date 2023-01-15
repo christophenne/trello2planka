@@ -24,9 +24,13 @@ export const getUsedTrelloLabels = () => {
     return Object.values(result);
 };
 
-export const getTrelloLists = () => trelloBoard.lists.filter(list => !list.closed);
+const includeItem = (item, includeArchived) => includeArchived || !item?.closed;
 
-export const getTrelloCardsOfList = (listId) => trelloBoard.cards.filter(l => (l.idList === listId) && !l.closed);
+export const getTrelloLists = (includeArchived) => 
+    trelloBoard.lists.filter(list => includeItem(list, includeArchived));
+
+export const getTrelloCardsOfList = (listId, includeArchived) => 
+    trelloBoard.cards.filter(l => (l.idList === listId)).filter(l => includeItem(l, includeArchived));
 
 export const getAllTrelloCheckItemsOfCard = (cardId) => 
     trelloBoard.checklists.filter(c => c.idCard === cardId).map(checklist => checklist.checkItems).flat();

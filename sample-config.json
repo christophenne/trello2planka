@@ -1,7 +1,8 @@
 {
   "importOptions": {
     "createdProjectName": "Trello Sample Import",
-    "fetchAttachments": false
+    "fetchAttachments": false,
+    "importArchivedItems": false
   },
   "planka": {
     "api": "http://localhost:3000/api/",
