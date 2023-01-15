@@ -47,9 +47,9 @@ async function importLabels(plankaBoard) {
 }
 
 async function importLists(plankaBoard, {config, me, trelloToPlankaLabels}) {
-    for (const trelloList of getTrelloLists()) {
+    for (const trelloList of getTrelloLists(!!config?.importOptions?.importArchivedItems)) {
         const plankaList = await createList({
-            name: trelloList.name,
+            name: getItemName(trelloList),
             boardId: plankaBoard.id,
             position: trelloList.pos
         });
@@ -60,12 +60,12 @@ async function importLists(plankaBoard, {config, me, trelloToPlankaLabels}) {
 }
 
 async function importCards(trelloList, plankaBoard, plankaList, {config, me, trelloToPlankaLabels}) {
-    for (const trelloCard of getTrelloCardsOfList(trelloList.id)) {
+    for (const trelloCard of getTrelloCardsOfList(trelloList.id, !!config?.importOptions?.importArchivedItems)) {
         const plankaCard = await createCard({
             boardId: plankaBoard.id,
             listId: plankaList.id,
             position: trelloCard.pos,
-            name: trelloCard.name,
+            name: getItemName(trelloCard),
             description: trelloCard.desc || null
         });
         reportCardMapping(trelloCard, plankaCard);
@@ -123,3 +123,5 @@ async function importAttachments(trelloCard, plankaCard, config) {
         reportAttachmentMapping(trelloAttachment, plankaAttachment);
     }
 }
+
+const getItemName = (item) => (item.closed ? '[ARCHIVED] ' : '') + item.name;
