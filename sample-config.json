@@ -1,6 +1,7 @@
 {
   "importOptions": {
-    "createdProjectName": "Trello Sample Import",
+    "createdProjectName": "Trello Sample Import (only used when existingProjectId not given)",
+    "existingProjectId": "12345678987654321",
     "fetchAttachments": false,
     "importArchivedItems": false
   },

@@ -12,11 +12,30 @@ export const importTrelloBoard = async (config, filename) => {
     setupTrelloClient(config);
 
     const me = await getMe();
-    const { plankaBoard } = await createProjectAndBoard(config?.importOptions?.createdProjectName);
+    const { plankaBoard } = await getPlankaProjectAndBoard(config);
 
     const trelloToPlankaLabels = await importLabels(plankaBoard);
     await importLists(plankaBoard, {config, me, trelloToPlankaLabels});
     reportDone();
+}
+
+async function getPlankaProjectAndBoard(config) {
+    let project;
+    if(config?.importOptions?.existingProjectId) {
+        project = {
+            id: config.importOptions.existingProjectId
+        };
+    } else {
+        project = await createImportProject(config?.importOptions?.createdProjectName || 'Trello Import');
+    }
+    const plankaBoard = await createBoard({
+        name: getBoardName(),
+        projectId: project.id,
+        type: 'kanban',
+        position: 1
+    });
+    reportProjectAndBoard(project, plankaBoard);
+    return { project, plankaBoard };
 }
 
 async function createProjectAndBoard(createdProjectName) {
