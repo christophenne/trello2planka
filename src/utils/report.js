@@ -31,12 +31,12 @@ export const reportStartup = (config, filename) => {
     });
 }
 
-export const reportProjectAndBoard = (createdProject, createdBoard) => {
+export const reportProjectAndBoard = (plankaProject, plankaBoard) => {
     const report = readReport();
     writeReport({
         ...report,
-        createdProject,
-        createdBoard,
+        plankaProject,
+        plankaBoard,
     });
 }
     

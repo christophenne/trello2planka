@@ -13,7 +13,7 @@ Most of this has already been adapted and integrated directly to planka, so you 
 
 ## Features
 
-* Import Trello Board Export to planka (board will be created in a new planka project). 
+* Import Trello Board Export to planka (either a new project will be created, or you choose an existing one by id). 
 * Import Lists
 * Import Cards, including
   * description
@@ -31,6 +31,9 @@ If you want to optionally import card attachments from Trello, you need to have 
 
 #### Archived Items
 You can import archived lists and cards to the planka board by setting `importOptions.importArchivedItems` to `true` in the `config.json`. The imported items will have `"[ARCHIVED]"` added to their name, but are of course simply regular items in planka. 
+
+#### Configuring the planka Project
+Set `importOptions.existingProjectId` to the ID of the project, in which you want to import the board. Alternatively, remove this option and use `importOptions.createdProjectName` to set a name for the newly created planka project instead.
 
 ## Limitations
 
