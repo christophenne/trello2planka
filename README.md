@@ -39,7 +39,11 @@ Set `importOptions.existingProjectId` to the ID of the project, in which you wan
 
 * Only one board at a time. 
 * For simplicity, users/members are not taken care of at all. 
-* Not imported yet: history/actions (except for comments).
+* Not imported yet: 
+  * Dates/Timers
+  * history/actions (except for comments).
+
+Please also be aware of the [open issues](https://github.com/christophenne/trello2planka/issues). 
 
 ## Compatibility
 
