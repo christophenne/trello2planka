@@ -93,7 +93,7 @@ async function importCards(trelloList, plankaBoard, plankaList, {config, me, tre
         await importCardLabels(trelloCard, plankaCard, trelloToPlankaLabels);
         await importTasks(trelloCard, plankaCard);
         await importComments(trelloCard, plankaCard, me);
-        await importAttachments(trelloCard, plankaCard, config);    
+        await importAttachments(trelloCard, plankaCard, config, me);
     }
 }
 
@@ -133,14 +133,27 @@ async function importComments(trelloCard, plankaCard, me) {
     }
 }
 
-async function importAttachments(trelloCard, plankaCard, config) {
-    if(!config?.importOptions?.fetchAttachments) {
+async function importAttachments(trelloCard, plankaCard, config, me) {
+    if (!config?.importOptions?.fetchAttachments) {
         return;
     }
-    for(const trelloAttachment of trelloCard.attachments) {
+    for (const trelloAttachment of trelloCard.attachments) {
         await downloadAttachment(trelloCard.id, trelloAttachment.id, trelloAttachment.fileName);
-        const plankaAttachment = await createAttachment(plankaCard.id, trelloAttachment.fileName);
-        reportAttachmentMapping(trelloAttachment, plankaAttachment);
+        if (trelloAttachment.isUpload) {
+            const plankaAttachment = await createAttachment(plankaCard.id, trelloAttachment.fileName);
+            reportAttachmentMapping(trelloAttachment, plankaAttachment);
+        }
+        else {
+            console.log('non-upload attachment - attaching it as an activity');
+            const plankaAction = await createComment({
+                cardId: plankaCard.id,
+                type: 'commentCard',
+                text: "[" + trelloAttachment.name + "](" + trelloAttachment.url + ")",
+                userId: me.id
+
+            });
+            reportActionMapping(trelloAttachment, plankaAction);
+        }
     }
 }
 
