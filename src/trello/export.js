@@ -19,7 +19,9 @@ export const getBoardName = () => trelloBoard.name;
 export const getUsedTrelloLabels = () => {
     const result = {};
     trelloBoard.cards.map((card) => card.labels).flat().forEach((label) => {
-        result[label.id] = label;
+	if(label) {
+	        result[label.id] = label;
+	}
     });
     return Object.values(result);
 };
