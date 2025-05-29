@@ -1,5 +1,8 @@
 # trello2planka
 
+> [!WARNING]
+> This has not been tested yet with Planka v2!
+
 Import your Trello JSON Export to your self-hosted [planka](https://github.com/plankanban/planka).
 
 Most of this has already been adapted and integrated directly to planka, so you can use the import feature in the web application. With the trello2planka command line tool you can additionally import attachments, archived items, and you get a JSON report file as well. 
